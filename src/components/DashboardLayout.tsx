@@ -1,8 +1,6 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, ReactNode } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { NavLink } from "@/components/NavLink";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   LayoutDashboard,
@@ -12,17 +10,21 @@ import {
   Bell,
   MessageCircle,
   User,
-  FileText,
   Award,
   LogOut,
-  ChevronRight,
+  ChevronDown,
 } from "lucide-react";
 
-const Dashboard = () => {
+interface DashboardLayoutProps {
+  children: ReactNode;
+}
+
+const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showSocialMenu, setShowSocialMenu] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -46,14 +48,6 @@ const Dashboard = () => {
     { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
     { icon: BookOpen, label: "Courses", path: "/dashboard/courses" },
     { icon: ShoppingBag, label: "Additional Purchases", path: "/dashboard/purchases" },
-    { icon: Users, label: "Social Connect", path: "/social" },
-  ];
-
-  const overviewCards = [
-    { label: "Total Courses", value: "12", color: "bg-blue-500" },
-    { label: "Total Score", value: "850", color: "bg-green-500" },
-    { label: "Attendance", value: "92%", color: "bg-orange-500" },
-    { label: "Late Entries", value: "3", color: "bg-red-500" },
   ];
 
   return (
@@ -78,6 +72,33 @@ const Dashboard = () => {
               <span className="font-medium">{item.label}</span>
             </NavLink>
           ))}
+          
+          {/* Social Connect with Dropdown */}
+          <div>
+            <button
+              onClick={() => setShowSocialMenu(!showSocialMenu)}
+              className="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg transition-colors text-gray-600 hover:bg-gray-50"
+            >
+              <div className="flex items-center gap-3">
+                <Users className="h-5 w-5" />
+                <span className="font-medium">Social Connect</span>
+              </div>
+              <ChevronDown className={`h-4 w-4 transition-transform ${showSocialMenu ? 'rotate-180' : ''}`} />
+            </button>
+            {showSocialMenu && (
+              <div className="ml-4 mt-2 space-y-1">
+                <NavLink to="/social/new" className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg">
+                  New
+                </NavLink>
+                <NavLink to="/social/newsfeed" className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg">
+                  Newsfeed
+                </NavLink>
+                <NavLink to="/social/chat" className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg">
+                  Chat
+                </NavLink>
+              </div>
+            )}
+          </div>
         </nav>
         <div className="p-4 border-t border-gray-200">
           <button
@@ -118,7 +139,6 @@ const Dashboard = () => {
                 </span>
               </button>
 
-              {/* Dropdown Menu */}
               {showDropdown && (
                 <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-200 py-2 z-[100]">
                   <div className="px-4 py-3 border-b border-gray-100">
@@ -155,104 +175,13 @@ const Dashboard = () => {
           </div>
         </header>
 
-        {/* Dashboard Content */}
+        {/* Page Content */}
         <div className="p-8">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
-              Welcome back, {user?.email?.split("@")[0] || "User"}!
-            </h1>
-            <p className="text-gray-600">Here's what's happening with your learning today</p>
-          </div>
-
-          {/* Overview Cards */}
-          <div className="grid grid-cols-4 gap-6 mb-8">
-            {overviewCards.map((card, i) => (
-              <Card key={i} className="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
-                <div className={`w-12 h-12 ${card.color} rounded-lg mb-4 flex items-center justify-center`}>
-                  <BookOpen className="h-6 w-6 text-white" />
-                </div>
-                <p className="text-sm text-gray-600 mb-1">{card.label}</p>
-                <p className="text-3xl font-bold text-gray-800">{card.value}</p>
-              </Card>
-            ))}
-          </div>
-
-          {/* Grid Sections */}
-          <div className="grid grid-cols-2 gap-6">
-            {/* My Courses */}
-            <Card className="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-800">My Courses</h2>
-                <ChevronRight className="h-5 w-5 text-gray-400" />
-              </div>
-              <div className="space-y-3">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="flex items-center gap-4 p-3 hover:bg-gray-50 rounded-lg transition-colors">
-                    <div className="w-12 h-12 bg-orange-100 rounded-lg"></div>
-                    <div className="flex-1">
-                      <p className="font-medium text-gray-800">Course Title {i}</p>
-                      <p className="text-sm text-gray-500">Progress: 65%</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </Card>
-
-            {/* Live/Upcoming Classes */}
-            <Card className="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-800">Live/Upcoming Classes</h2>
-                <ChevronRight className="h-5 w-5 text-gray-400" />
-              </div>
-              <div className="space-y-3">
-                {[1, 2].map((i) => (
-                  <div key={i} className="p-4 bg-blue-50 rounded-lg">
-                    <p className="font-medium text-gray-800 mb-1">Class Title {i}</p>
-                    <p className="text-sm text-gray-600">Today at 6:00 PM</p>
-                  </div>
-                ))}
-              </div>
-            </Card>
-
-            {/* Notifications */}
-            <Card className="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-800">Notifications</h2>
-                <ChevronRight className="h-5 w-5 text-gray-400" />
-              </div>
-              <div className="space-y-3">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-orange-500 rounded-full mt-2"></div>
-                    <div>
-                      <p className="text-sm text-gray-800">Notification message {i}</p>
-                      <p className="text-xs text-gray-500">2 hours ago</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </Card>
-
-            {/* Tasks & Quiz */}
-            <Card className="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-800">Tasks & Quiz</h2>
-                <ChevronRight className="h-5 w-5 text-gray-400" />
-              </div>
-              <div className="space-y-3">
-                {[1, 2].map((i) => (
-                  <div key={i} className="p-4 border border-gray-200 rounded-lg">
-                    <p className="font-medium text-gray-800 mb-1">Task {i}</p>
-                    <p className="text-sm text-gray-600">Due: Tomorrow</p>
-                  </div>
-                ))}
-              </div>
-            </Card>
-          </div>
+          {children}
         </div>
       </main>
     </div>
   );
 };
 
-export default Dashboard;
+export default DashboardLayout;

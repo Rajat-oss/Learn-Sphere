@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { NavLink } from "@/components/NavLink";
 import { Button } from "@/components/ui/button";
-import { Menu, X, GraduationCap } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { Menu, X, GraduationCap, User } from "lucide-react";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user, isAuthenticated } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,8 +20,12 @@ const Navbar = () => {
   const navLinks = [
     { to: "/", label: "Home" },
     { to: "/courses", label: "Courses" },
-    { to: "/live-classes", label: "Live Classes" },
-    { to: "/dashboard", label: "Dashboard" },
+    { to: "/books", label: "Books" },
+    { to: "/pre-recorded", label: "Pre-Recorded" },
+    { to: "/study-material", label: "Study Material" },
+    { to: "/consultation", label: "1:1 Consultation" },
+    { to: "/webinar", label: "Webinar" },
+    { to: "/blogs", label: "Blogs" },
   ];
 
   return (
@@ -54,18 +60,31 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* CTA Buttons */}
+          {/* CTA Buttons / User Profile */}
           <div className="hidden md:flex items-center gap-4">
-            <NavLink to="/login">
-              <Button variant="ghost" className="font-semibold text-[#667085] hover:text-[#0B1A2A]">
-                Log In
-              </Button>
-            </NavLink>
-            <NavLink to="/signup">
-              <Button className="bg-gradient-orange text-white font-semibold rounded-full px-6 hover:shadow-glow-orange hover:-translate-y-0.5 transition-all">
-                Get Started
-              </Button>
-            </NavLink>
+            {isAuthenticated ? (
+              <NavLink to="/dashboard" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                <div className="w-10 h-10 rounded-full bg-gradient-orange flex items-center justify-center text-white font-bold">
+                  {user?.email?.[0].toUpperCase() || <User className="h-5 w-5" />}
+                </div>
+                <span className="font-semibold text-[#0B1A2A]">
+                  {user?.email?.split('@')[0] || 'User'}
+                </span>
+              </NavLink>
+            ) : (
+              <>
+                <NavLink to="/login">
+                  <Button variant="ghost" className="font-semibold text-[#667085] hover:text-[#0B1A2A]">
+                    Log In
+                  </Button>
+                </NavLink>
+                <NavLink to="/signup">
+                  <Button className="bg-gradient-orange text-white font-semibold rounded-full px-6 hover:shadow-glow-orange hover:-translate-y-0.5 transition-all">
+                    Get Started
+                  </Button>
+                </NavLink>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -94,16 +113,26 @@ const Navbar = () => {
               </NavLink>
             ))}
             <div className="pt-4 space-y-3">
-              <NavLink to="/login" className="block">
-                <Button variant="outline" className="w-full">
-                  Log In
-                </Button>
-              </NavLink>
-              <NavLink to="/signup" className="block">
-                <Button className="w-full bg-gradient-orange text-white font-semibold rounded-full">
-                  Get Started
-                </Button>
-              </NavLink>
+              {isAuthenticated ? (
+                <NavLink to="/dashboard" className="block">
+                  <Button className="w-full bg-gradient-orange text-white font-semibold rounded-full">
+                    Dashboard
+                  </Button>
+                </NavLink>
+              ) : (
+                <>
+                  <NavLink to="/login" className="block">
+                    <Button variant="outline" className="w-full">
+                      Log In
+                    </Button>
+                  </NavLink>
+                  <NavLink to="/signup" className="block">
+                    <Button className="w-full bg-gradient-orange text-white font-semibold rounded-full">
+                      Get Started
+                    </Button>
+                  </NavLink>
+                </>
+              )}
             </div>
           </div>
         </div>
