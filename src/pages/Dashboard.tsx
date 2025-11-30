@@ -2,8 +2,9 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { NavLink } from "@/components/NavLink";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
+import { db } from "@/lib/firebase";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
 import {
   LayoutDashboard,
   BookOpen,
@@ -12,10 +13,10 @@ import {
   Bell,
   MessageCircle,
   User,
-  FileText,
   Award,
   LogOut,
   ChevronRight,
+  ChevronDown,
 } from "lucide-react";
 
 const Dashboard = () => {
@@ -23,7 +24,13 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showSocialMenu, setShowSocialMenu] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [stats, setStats] = useState({ courses: 0, score: 0, attendance: 0, lateEntries: 0 });
+  const [courses, setCourses] = useState<any[]>([]);
+  const [classes, setClasses] = useState<any[]>([]);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [tasks, setTasks] = useState<any[]>([]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -37,6 +44,52 @@ const Dashboard = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showDropdown]);
 
+  useEffect(() => {
+    if (!user?.uid) return;
+
+    const unsubscribers: (() => void)[] = [];
+
+    // Listen to user stats
+    const statsQuery = query(collection(db, "userStats"), where("userId", "==", user.uid));
+    unsubscribers.push(onSnapshot(statsQuery, (snapshot) => {
+      if (!snapshot.empty) {
+        const data = snapshot.docs[0].data();
+        setStats({
+          courses: data.totalCourses || 0,
+          score: data.totalScore || 0,
+          attendance: data.attendance || 0,
+          lateEntries: data.lateEntries || 0
+        });
+      }
+    }));
+
+    // Listen to enrolled courses
+    const coursesQuery = query(collection(db, "enrollments"), where("userId", "==", user.uid));
+    unsubscribers.push(onSnapshot(coursesQuery, (snapshot) => {
+      setCourses(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    }));
+
+    // Listen to upcoming classes
+    const classesQuery = query(collection(db, "classes"), where("userId", "==", user.uid));
+    unsubscribers.push(onSnapshot(classesQuery, (snapshot) => {
+      setClasses(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    }));
+
+    // Listen to notifications
+    const notificationsQuery = query(collection(db, "notifications"), where("userId", "==", user.uid));
+    unsubscribers.push(onSnapshot(notificationsQuery, (snapshot) => {
+      setNotifications(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    }));
+
+    // Listen to tasks
+    const tasksQuery = query(collection(db, "tasks"), where("userId", "==", user.uid));
+    unsubscribers.push(onSnapshot(tasksQuery, (snapshot) => {
+      setTasks(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    }));
+
+    return () => unsubscribers.forEach(unsub => unsub());
+  }, [user?.uid]);
+
   const handleLogout = async () => {
     await logout();
     navigate("/");
@@ -46,14 +99,13 @@ const Dashboard = () => {
     { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
     { icon: BookOpen, label: "Courses", path: "/dashboard/courses" },
     { icon: ShoppingBag, label: "Additional Purchases", path: "/dashboard/purchases" },
-    { icon: Users, label: "Social Connect", path: "/social" },
   ];
 
   const overviewCards = [
-    { label: "Total Courses", value: "12", color: "bg-blue-500" },
-    { label: "Total Score", value: "850", color: "bg-green-500" },
-    { label: "Attendance", value: "92%", color: "bg-orange-500" },
-    { label: "Late Entries", value: "3", color: "bg-red-500" },
+    { label: "Total Courses", value: stats.courses.toString(), color: "bg-blue-500" },
+    { label: "Total Score", value: stats.score.toString(), color: "bg-green-500" },
+    { label: "Attendance", value: `${stats.attendance}%`, color: "bg-orange-500" },
+    { label: "Late Entries", value: stats.lateEntries.toString(), color: "bg-red-500" },
   ];
 
   return (
@@ -78,6 +130,33 @@ const Dashboard = () => {
               <span className="font-medium">{item.label}</span>
             </NavLink>
           ))}
+          
+          {/* Social Connect with Dropdown */}
+          <div>
+            <button
+              onClick={() => setShowSocialMenu(!showSocialMenu)}
+              className="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg transition-colors text-gray-600 hover:bg-gray-50"
+            >
+              <div className="flex items-center gap-3">
+                <Users className="h-5 w-5" />
+                <span className="font-medium">Social Connect</span>
+              </div>
+              <ChevronDown className={`h-4 w-4 transition-transform ${showSocialMenu ? 'rotate-180' : ''}`} />
+            </button>
+            {showSocialMenu && (
+              <div className="ml-4 mt-2 space-y-1">
+                <NavLink to="/social/new" className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg">
+                  New
+                </NavLink>
+                <NavLink to="/social/newsfeed" className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg">
+                  Newsfeed
+                </NavLink>
+                <NavLink to="/social/chat" className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg">
+                  Chat
+                </NavLink>
+              </div>
+            )}
+          </div>
         </nav>
         <div className="p-4 border-t border-gray-200">
           <button
@@ -186,15 +265,17 @@ const Dashboard = () => {
                 <ChevronRight className="h-5 w-5 text-gray-400" />
               </div>
               <div className="space-y-3">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="flex items-center gap-4 p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                {courses.length > 0 ? courses.slice(0, 3).map((course) => (
+                  <div key={course.id} className="flex items-center gap-4 p-3 hover:bg-gray-50 rounded-lg transition-colors">
                     <div className="w-12 h-12 bg-orange-100 rounded-lg"></div>
                     <div className="flex-1">
-                      <p className="font-medium text-gray-800">Course Title {i}</p>
-                      <p className="text-sm text-gray-500">Progress: 65%</p>
+                      <p className="font-medium text-gray-800">{course.title || 'Course'}</p>
+                      <p className="text-sm text-gray-500">Progress: {course.progress || 0}%</p>
                     </div>
                   </div>
-                ))}
+                )) : (
+                  <p className="text-sm text-gray-500 text-center py-4">No courses enrolled yet</p>
+                )}
               </div>
             </Card>
 
@@ -205,12 +286,14 @@ const Dashboard = () => {
                 <ChevronRight className="h-5 w-5 text-gray-400" />
               </div>
               <div className="space-y-3">
-                {[1, 2].map((i) => (
-                  <div key={i} className="p-4 bg-blue-50 rounded-lg">
-                    <p className="font-medium text-gray-800 mb-1">Class Title {i}</p>
-                    <p className="text-sm text-gray-600">Today at 6:00 PM</p>
+                {classes.length > 0 ? classes.slice(0, 2).map((cls) => (
+                  <div key={cls.id} className="p-4 bg-blue-50 rounded-lg">
+                    <p className="font-medium text-gray-800 mb-1">{cls.title || 'Class'}</p>
+                    <p className="text-sm text-gray-600">{cls.schedule || 'TBD'}</p>
                   </div>
-                ))}
+                )) : (
+                  <p className="text-sm text-gray-500 text-center py-4">No upcoming classes</p>
+                )}
               </div>
             </Card>
 
@@ -221,15 +304,17 @@ const Dashboard = () => {
                 <ChevronRight className="h-5 w-5 text-gray-400" />
               </div>
               <div className="space-y-3">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="flex items-start gap-3">
+                {notifications.length > 0 ? notifications.slice(0, 3).map((notif) => (
+                  <div key={notif.id} className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-orange-500 rounded-full mt-2"></div>
                     <div>
-                      <p className="text-sm text-gray-800">Notification message {i}</p>
-                      <p className="text-xs text-gray-500">2 hours ago</p>
+                      <p className="text-sm text-gray-800">{notif.message || 'Notification'}</p>
+                      <p className="text-xs text-gray-500">{notif.time || 'Just now'}</p>
                     </div>
                   </div>
-                ))}
+                )) : (
+                  <p className="text-sm text-gray-500 text-center py-4">No notifications</p>
+                )}
               </div>
             </Card>
 
@@ -240,12 +325,14 @@ const Dashboard = () => {
                 <ChevronRight className="h-5 w-5 text-gray-400" />
               </div>
               <div className="space-y-3">
-                {[1, 2].map((i) => (
-                  <div key={i} className="p-4 border border-gray-200 rounded-lg">
-                    <p className="font-medium text-gray-800 mb-1">Task {i}</p>
-                    <p className="text-sm text-gray-600">Due: Tomorrow</p>
+                {tasks.length > 0 ? tasks.slice(0, 2).map((task) => (
+                  <div key={task.id} className="p-4 border border-gray-200 rounded-lg">
+                    <p className="font-medium text-gray-800 mb-1">{task.title || 'Task'}</p>
+                    <p className="text-sm text-gray-600">Due: {task.dueDate || 'TBD'}</p>
                   </div>
-                ))}
+                )) : (
+                  <p className="text-sm text-gray-500 text-center py-4">No pending tasks</p>
+                )}
               </div>
             </Card>
           </div>

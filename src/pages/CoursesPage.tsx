@@ -15,7 +15,7 @@ const CoursesPage = () => {
           <p className="text-gray-600 mb-8 max-w-md">
             You're not enrolled in any courses yet. Join a course to explore all its content and materials right here!
           </p>
-          <NavLink to="/">
+          <NavLink to="/courses">
             <Button className="bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full px-8 hover:shadow-lg transition-all">
               Browse Courses
             </Button>

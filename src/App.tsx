@@ -14,6 +14,9 @@ import ForgotPassword from "./pages/ForgotPassword";
 import Dashboard from "./pages/Dashboard";
 import CoursesPage from "./pages/CoursesPage";
 import PurchasesPage from "./pages/PurchasesPage";
+import NewPage from "./pages/NewPage";
+import NewsfeedPage from "./pages/NewsfeedPage";
+import ChatPage from "./pages/ChatPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +39,9 @@ const App = () => (
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/dashboard/courses" element={<CoursesPage />} />
               <Route path="/dashboard/purchases" element={<PurchasesPage />} />
+              <Route path="/social/new" element={<NewPage />} />
+              <Route path="/social/newsfeed" element={<NewsfeedPage />} />
+              <Route path="/social/chat" element={<ChatPage />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
