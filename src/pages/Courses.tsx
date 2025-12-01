@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,29 @@ import courseDesign from "@/assets/course-design.jpg";
 const Courses = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [apiCourses, setApiCourses] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await fetch('https://collection-for-coursera-courses.p.rapidapi.com/rapidapi/course/get_institution.php', {
+          method: 'GET',
+          headers: {
+            'x-rapidapi-key': 'f735c7dec3msh59187241bf1980ep1d9b2cjsn68b8408b287c',
+            'x-rapidapi-host': 'collection-for-coursera-courses.p.rapidapi.com'
+          }
+        });
+        const data = await response.json();
+        setApiCourses(data || []);
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCourses();
+  }, []);
 
   const categories = [
     { id: "all", label: "All Courses" },
@@ -109,7 +132,22 @@ const Courses = () => {
     },
   ];
 
-  const filteredCourses = courses.filter((course) => {
+  const allCourses = [...courses, ...apiCourses.map((course: any, index: number) => ({
+    id: `api-${index}`,
+    title: course.name || course.title || 'Course',
+    instructor: course.instructor || course.partner || 'Coursera',
+    category: 'development',
+    rating: course.rating || 4.5,
+    students: course.enrolled || 1000,
+    lessons: course.modules || 50,
+    duration: course.duration || '30 hours',
+    price: '₹2,999',
+    level: course.level || 'Intermediate',
+    image: course.image || courseWeb,
+    description: course.description || 'Learn from industry experts',
+  }))];
+
+  const filteredCourses = allCourses.filter((course) => {
     const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       course.instructor.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === "all" || course.category === selectedCategory;
@@ -182,7 +220,16 @@ const Courses = () => {
           Showing {filteredCourses.length} {filteredCourses.length === 1 ? "course" : "courses"}
         </div>
 
+        {/* Loading State */}
+        {loading && (
+          <div className="text-center py-16">
+            <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Loading courses...</p>
+          </div>
+        )}
+
         {/* Course Grid */}
+        {!loading && (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {filteredCourses.map((course, index) => (
             <Card
@@ -258,9 +305,10 @@ const Courses = () => {
             </Card>
           ))}
         </div>
+        )}
 
         {/* No Results */}
-        {filteredCourses.length === 0 && (
+        {!loading && filteredCourses.length === 0 && (
           <div className="text-center py-16 animate-fade-in">
             <div className="w-24 h-24 mx-auto mb-6 bg-muted rounded-full flex items-center justify-center">
               <Search className="h-12 w-12 text-muted-foreground" />
