@@ -130,44 +130,45 @@ const Courses = () => {
   };
 
   return (
-    <div className="min-h-screen pt-28 pb-16">
+    <div className="min-h-screen pt-24 sm:pt-28 pb-12 sm:pb-16">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-12 animate-fade-in">
-          <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
+        <div className="text-center mb-8 sm:mb-10 md:mb-12 animate-fade-in">
+          <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
             Explore Our <span className="gradient-text">Courses</span>
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto px-4">
             Discover world-class courses designed by industry experts to accelerate your career
           </p>
         </div>
 
         {/* Search and Filter */}
-        <div className="mb-12 space-y-6 animate-fade-in" style={{ animationDelay: "0.1s" }}>
+        <div className="mb-8 sm:mb-10 md:mb-12 space-y-4 sm:space-y-6 animate-fade-in" style={{ animationDelay: "0.1s" }}>
           {/* Search Bar */}
           <div className="relative max-w-2xl mx-auto">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
+            <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4 sm:h-5 sm:w-5" />
             <Input
               type="text"
-              placeholder="Search courses, instructors, topics..."
+              placeholder="Search courses..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 h-14 glass text-lg"
+              className="pl-10 sm:pl-12 h-12 sm:h-14 glass text-base sm:text-lg"
             />
           </div>
 
           {/* Category Filter */}
-          <div className="flex items-center justify-center gap-3 flex-wrap">
-            <Filter className="h-5 w-5 text-muted-foreground" />
+          <div className="flex items-center justify-center gap-2 sm:gap-3 flex-wrap">
+            <Filter className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground hidden sm:block" />
             {categories.map((category) => (
               <Button
                 key={category.id}
                 variant={selectedCategory === category.id ? "default" : "outline"}
                 onClick={() => setSelectedCategory(category.id)}
+                size="sm"
                 className={
                   selectedCategory === category.id
-                    ? "bg-gradient-orange border-0 text-white"
-                    : "glass"
+                    ? "bg-gradient-orange border-0 text-white text-xs sm:text-sm"
+                    : "glass text-xs sm:text-sm"
                 }
               >
                 {category.label}
@@ -177,12 +178,12 @@ const Courses = () => {
         </div>
 
         {/* Results Count */}
-        <div className="mb-8 text-muted-foreground animate-fade-in" style={{ animationDelay: "0.2s" }}>
+        <div className="mb-6 sm:mb-8 text-sm sm:text-base text-muted-foreground animate-fade-in" style={{ animationDelay: "0.2s" }}>
           Showing {filteredCourses.length} {filteredCourses.length === 1 ? "course" : "courses"}
         </div>
 
         {/* Course Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {filteredCourses.map((course, index) => (
             <Card
               key={course.id}
@@ -202,12 +203,12 @@ const Courses = () => {
               </div>
 
               {/* Course Content */}
-              <div className="p-6 space-y-4">
+              <div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
                 <div>
-                  <h3 className="font-display text-xl font-bold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                  <h3 className="font-display text-lg sm:text-xl font-bold mb-1 sm:mb-2 line-clamp-2 group-hover:text-primary transition-colors">
                     {course.title}
                   </h3>
-                  <p className="text-sm text-muted-foreground line-clamp-2">
+                  <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">
                     {course.description}
                   </p>
                 </div>
@@ -222,33 +223,33 @@ const Courses = () => {
                 </div>
 
                 {/* Stats */}
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-muted-foreground flex-wrap">
                   <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 fill-primary text-primary" />
+                    <Star className="h-3 w-3 sm:h-4 sm:w-4 fill-primary text-primary" />
                     <span className="font-semibold text-foreground">{course.rating}</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <Users className="h-4 w-4" />
-                    <span>{course.students.toLocaleString()}</span>
+                    <Users className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="hidden sm:inline">{course.students.toLocaleString()}</span>
+                    <span className="sm:hidden">{(course.students / 1000).toFixed(1)}k</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <BookOpen className="h-4 w-4" />
-                    <span>{course.lessons} lessons</span>
+                    <BookOpen className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span>{course.lessons}</span>
                   </div>
-                </div>
-
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Clock className="h-4 w-4" />
-                  <span>{course.duration} total</span>
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span>{course.duration}</span>
+                  </div>
                 </div>
 
                 {/* Footer */}
-                <div className="flex items-center justify-between pt-4 border-t border-border">
-                  <div className="font-display text-2xl font-bold text-primary">
+                <div className="flex items-center justify-between pt-3 sm:pt-4 border-t border-border">
+                  <div className="font-display text-xl sm:text-2xl font-bold text-primary">
                     {course.price}
                   </div>
                   <NavLink to={`/course/${course.id}`}>
-                    <Button className="bg-gradient-orange border-0 text-white font-semibold hover:shadow-glow-orange hover:scale-105 transition-all">
+                    <Button size="sm" className="bg-gradient-orange border-0 text-white font-semibold hover:shadow-glow-orange hover:scale-105 transition-all text-xs sm:text-sm">
                       View Course
                     </Button>
                   </NavLink>

@@ -25,39 +25,39 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative min-h-screen bg-gradient-hero pt-32 pb-20 px-4 overflow-hidden">
+      <section className="relative min-h-screen bg-gradient-hero pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 overflow-hidden">
         <div className="container mx-auto max-w-7xl">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             {/* Left Content */}
-            <div className="space-y-8 animate-fade-in">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 border border-orange-200">
+            <div className="space-y-6 sm:space-y-8 animate-fade-in text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-orange-50 border border-orange-200">
                 <div className="w-2 h-2 rounded-full bg-gradient-orange" />
-                <span className="text-xs font-semibold tracking-widest uppercase text-[#FF7A2B]">
+                <span className="text-[10px] sm:text-xs font-semibold tracking-widest uppercase text-[#FF7A2B]">
                   THE FUTURE OF LEARNING
                 </span>
               </div>
               
-              <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.1] tracking-tight">
+              <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-[1.1] tracking-tight">
                 Welcome to the Place Where Potential Meets{" "}
                 <span className="text-gradient">Possibility.</span>
               </h1>
               
-              <p className="text-lg sm:text-xl text-[#667085] max-w-xl leading-relaxed">
+              <p className="text-base sm:text-lg md:text-xl text-[#667085] max-w-xl leading-relaxed mx-auto lg:mx-0">
                 Transform your career with world-class courses, live mentorship, and a thriving community of learners.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 pt-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2 sm:pt-4 justify-center lg:justify-start">
                 <Button 
                   size="lg" 
-                  className="bg-gradient-orange text-white hover:shadow-glow-orange hover:-translate-y-1 transition-all duration-300 rounded-full px-10 py-6 text-lg font-semibold shadow-glow-orange"
+                  className="bg-gradient-orange text-white hover:shadow-glow-orange hover:-translate-y-1 transition-all duration-300 rounded-full px-8 sm:px-10 py-5 sm:py-6 text-base sm:text-lg font-semibold shadow-glow-orange w-full sm:w-auto"
                   onClick={() => handleAuthAction()}
                 >
                   Get Started Free
                 </Button>
-                <NavLink to="/courses">
+                <NavLink to="/courses" className="w-full sm:w-auto">
                   <Button 
                     size="lg" 
-                    className="bg-[#0B1A2A] text-white hover:bg-[#0B1A2A]/90 hover:-translate-y-1 transition-all duration-300 rounded-full px-10 py-6 text-lg font-semibold shadow-soft"
+                    className="w-full bg-[#0B1A2A] text-white hover:bg-[#0B1A2A]/90 hover:-translate-y-1 transition-all duration-300 rounded-full px-8 sm:px-10 py-5 sm:py-6 text-base sm:text-lg font-semibold shadow-soft"
                   >
                     Explore Courses
                     <ArrowRight className="ml-2 h-5 w-5" />
@@ -74,7 +74,7 @@ const Home = () => {
         </div>
         
         {/* Bottom Glow */}
-        <div className="absolute bottom-0 left-0 right-0 h-56 bg-gradient-to-t from-orange-400 via-orange-200 to-transparent pointer-events-none" />
+        <div className="absolute bottom-0 left-0 right-0 h-32 sm:h-56 bg-gradient-to-t from-orange-400 via-orange-200 to-transparent pointer-events-none" />
       </section>
 
       {/* Syllabus Section */}
@@ -85,23 +85,23 @@ const Home = () => {
         id="path-to-mastery" 
         ref={pricingRef as any}
         aria-labelledby="path-title"
-        className="py-24 px-4 bg-gradient-to-b from-[#04060A] to-[#071426] relative overflow-hidden scroll-mt-20"
+        className="py-12 sm:py-16 md:py-24 px-4 bg-gradient-to-b from-[#04060A] to-[#071426] relative overflow-hidden scroll-mt-20"
       >
         <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-orange-500 rounded-full blur-3xl" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[800px] h-[400px] sm:h-[800px] bg-orange-500 rounded-full blur-3xl" />
         </div>
         
         <div className="container mx-auto max-w-7xl relative z-10">
-          <div className="text-center mb-16">
-            <h2 id="path-title" className="text-2xl md:text-3xl lg:text-4xl font-black mb-4 text-[#F7FAFC]">
+          <div className="text-center mb-8 sm:mb-12 md:mb-16">
+            <h2 id="path-title" className="text-2xl sm:text-3xl md:text-4xl font-black mb-3 sm:mb-4 text-[#F7FAFC] px-4">
               Path to <span className="text-gradient">Mastery</span>
             </h2>
-            <p className="text-lg text-[#AAB3BD]">
+            <p className="text-base sm:text-lg text-[#AAB3BD] px-4">
               Select the package that fits your goals. Start out or scale up.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
             {[
               {
                 tag: 'BEGINNER',
@@ -200,24 +200,24 @@ const Home = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-24 px-4 bg-gradient-to-b from-white to-orange-50/30">
+      <section className="py-12 sm:py-16 md:py-24 px-4 bg-gradient-to-b from-white to-orange-50/30">
         <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 border border-orange-200 mb-6">
+          <div className="text-center mb-10 sm:mb-12 md:mb-16">
+            <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-orange-50 border border-orange-200 mb-4 sm:mb-6">
               <div className="w-2 h-2 rounded-full bg-gradient-orange" />
-              <span className="text-xs font-semibold tracking-widest uppercase text-[#FF7A2B]">
+              <span className="text-[10px] sm:text-xs font-semibold tracking-widest uppercase text-[#FF7A2B]">
                 WHY CHOOSE US
               </span>
             </div>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-4 sm:mb-6 px-4">
               Everything You Need to <span className="text-gradient">Succeed</span>
             </h2>
-            <p className="text-xl text-[#667085] max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-[#667085] max-w-2xl mx-auto px-4">
               Our platform combines cutting-edge technology with proven learning methodologies
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {[
               { icon: BookOpen, title: "Expert Content", desc: "Learn from industry professionals with real-world experience" },
               { icon: Users, title: "Community Learning", desc: "Connect with thousands of learners and grow together" },
@@ -239,26 +239,26 @@ const Home = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 px-4 bg-[#0B1A2A] text-white relative overflow-hidden">
+      <section className="py-12 sm:py-16 md:py-24 px-4 bg-[#0B1A2A] text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 right-10 w-64 h-64 bg-orange-500 rounded-full blur-3xl" />
-          <div className="absolute bottom-10 left-10 w-96 h-96 bg-orange-600 rounded-full blur-3xl" />
+          <div className="absolute top-10 right-10 w-32 sm:w-64 h-32 sm:h-64 bg-orange-500 rounded-full blur-3xl" />
+          <div className="absolute bottom-10 left-10 w-48 sm:w-96 h-48 sm:h-96 bg-orange-600 rounded-full blur-3xl" />
         </div>
         <div className="container mx-auto max-w-4xl text-center relative z-10">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 text-white">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-4 sm:mb-6 text-white px-4">
             Ready to Transform Your <span className="text-gradient">Career?</span>
           </h2>
-          <p className="text-xl mb-8 text-white/80 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 text-white/80 max-w-2xl mx-auto px-4">
             Join thousands of successful students who have achieved their dreams with LearnSphere
           </p>
           <Button 
             size="lg" 
-            className="bg-gradient-orange text-white hover:shadow-glow-orange hover:-translate-y-1 transition-all duration-300 rounded-full px-12 py-7 text-lg font-semibold shadow-glow-orange"
+            className="bg-gradient-orange text-white hover:shadow-glow-orange hover:-translate-y-1 transition-all duration-300 rounded-full px-8 sm:px-12 py-5 sm:py-7 text-base sm:text-lg font-semibold shadow-glow-orange w-full sm:w-auto max-w-xs sm:max-w-none"
             onClick={() => handleAuthAction()}
           >
             Get Started Free
           </Button>
-          <div className="flex items-center justify-center gap-8 mt-8 text-sm text-white/70 flex-wrap">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 mt-6 sm:mt-8 text-xs sm:text-sm text-white/70">
             <span>✓ No credit card required</span>
             <span>✓ 7-day free trial</span>
             <span>✓ Cancel anytime</span>

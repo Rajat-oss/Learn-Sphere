@@ -61,7 +61,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const resetPassword = async (email: string) => {
-    await sendPasswordResetEmail(auth, email);
+    const actionCodeSettings = {
+      url: window.location.origin + '/login',
+      handleCodeInApp: false,
+    };
+    await sendPasswordResetEmail(auth, email, actionCodeSettings);
   };
 
   return (

@@ -35,15 +35,15 @@ const Login = () => {
 
   return (
     <div className="absolute inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm animate-in fade-in duration-300 min-h-screen">
-      <Card className="relative w-full max-w-md bg-gradient-to-br from-[#0D1B2A] via-[#1B263B] to-[#0D1B2A] border border-orange-500/30 rounded-3xl shadow-2xl shadow-orange-500/20 backdrop-blur-xl animate-in zoom-in-95 slide-in-from-bottom-4 duration-500">
-        <NavLink to="/" className="absolute top-4 right-4 p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-full transition-all">
+      <Card className="relative w-full max-w-md bg-gradient-to-br from-[#0D1B2A] via-[#1B263B] to-[#0D1B2A] border border-orange-500/30 rounded-2xl sm:rounded-3xl shadow-2xl shadow-orange-500/20 backdrop-blur-xl animate-in zoom-in-95 slide-in-from-bottom-4 duration-500">
+        <NavLink to="/" className="absolute top-3 right-3 sm:top-4 sm:right-4 p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-full transition-all z-10">
           <X className="h-5 w-5" />
         </NavLink>
 
-        <div className="p-10 space-y-6">
-          <div className="text-center space-y-2">
-            <h1 className="font-display text-4xl font-black text-white">Welcome Back</h1>
-            <p className="text-gray-400">Sign in to continue your journey</p>
+        <div className="p-6 sm:p-8 md:p-10 space-y-5 sm:space-y-6">
+          <div className="text-center space-y-1 sm:space-y-2">
+            <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-black text-white">Welcome Back</h1>
+            <p className="text-sm sm:text-base text-gray-400">Sign in to continue your journey</p>
           </div>
 
           <form className="space-y-5" onSubmit={handleSubmit}>
